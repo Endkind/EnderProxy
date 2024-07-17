@@ -19,7 +19,7 @@ public class ConfigHelper {
 
     public static void copyConfigFromResource() {
         try (InputStream inputStream = ConfigHelper.class.getClassLoader().getResourceAsStream("config.yml");
-             OutputStream outputStream = new FileOutputStream("config.yml")) {
+             OutputStream outputStream = new FileOutputStream("EnderProxy/config.yml")) {
 
             byte[] buffer = new byte[1024];
             int length;
@@ -35,7 +35,7 @@ public class ConfigHelper {
     public static Config getConfig() {
         Config config = new Config();
 
-        try (InputStream inputStream = new FileInputStream("config.yml")) {
+        try (InputStream inputStream = new FileInputStream("EnderProxy/config.yml")) {
             Yaml yaml = new Yaml();
             Map<String, Object> data = yaml.load(inputStream);
 

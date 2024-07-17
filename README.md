@@ -10,11 +10,12 @@ Benutzern, verschiedene Verbindungsanforderungen über einen einzigen Proxy zu s
 ## Installation
 
 1. **Java installieren**:
+
    Stelle sicher, dass Java 1.8 oder höher installiert ist. Du kannst die Java-Version mit folgendem Befehl überprüfen:
 
-```sh
-java -version
-```
+   ```sh
+   java -version
+   ```
 
 2. **EnderProxy herunterladen**:
    Lade die neuste Version von EnderProxy von der [Releases-Seite](https://github.com/Endkind/EnderProxy/releases) herunter.
@@ -22,15 +23,17 @@ java -version
 ## Nutzung
 
 1. **Proxy starten**:
+
    Um EnderProxy zu starten, benutze foldenden Befehl, wobei `{version}` durch die aktuelle Versionsnummer ersetzt
    werden muss:
 
-```sh
-java -jar EnderProxy-{version}-jar-with-dependencies.jar
-```
+   ```sh
+   java -jar EnderProxy-{version}-jar-with-dependencies.jar
+   ```
 
 2. **Konfigurationsdatei**:
-   Beim ersten Start wird eine Datei namens `config.yml` im gleichen Verzeichnis wie die `.jar`-Datei erstellt.
+
+   Beim ersten Start wird eine Datei namens `config.yml` im Ordner `EnderProxy` erstellt, der sich im gleichen Verzeichnis wie die `.jar`-Datei befindet.
    Diese Datei enthält die Konfigurationseinstellungen für den Proxy. Du kannst diese Datei nach deinen Bedürfnissen
    anpassen.
 
