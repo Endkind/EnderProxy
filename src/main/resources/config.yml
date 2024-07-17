@@ -9,3 +9,13 @@ version: 1
   listenPort: 25565
   backendHost: '192.168.0.101'
   backendPort: 25565
+
+'ssh.endkind.net':
+  listenPort: 22
+  backendHost: '192.168.0.102'
+  backendPort: 22
+
+'www.endkind.net':
+  listenPort: 443
+  backendHost: '192.168.0.103'
+  backendPort: 443

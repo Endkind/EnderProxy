@@ -45,14 +45,24 @@ Hier ist die Standardkonfiguration, wie sie in deiner `config.yml` aussehen kön
 version: 1
 
 'survival.endkind.net':
-  listenPort: 25565
-  backendHost: '192.168.0.100'
-  backendPort: 25565
+   listenPort: 25565
+   backendHost: '192.168.0.100'
+   backendPort: 25565
 
 'forge.endkind.net':
-  listenPort: 25565
-  backendHost: '192.168.0.101'
-  backendPort: 25565
+   listenPort: 25565
+   backendHost: '192.168.0.101'
+   backendPort: 25565
+
+'ssh.endkind.net':
+   listenPort: 22
+   backendHost: '192.168.0.102'
+   backendPort: 22
+
+'www.endkind.net':
+   listenPort: 443
+   backendHost: '192.168.0.103'
+   backendPort: 443
 ```
 
 ## Beitrag leisten
