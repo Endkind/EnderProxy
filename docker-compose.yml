@@ -1,0 +1,10 @@
+version: "3"
+services:
+  enderproxy:
+    network_mode: host
+    container_name: endkind-enderproxy
+    volumes:
+      - endkind-enderproxy:/enderproxy
+    image: endkind/enderproxy:0.3.0
+volumes:
+  endkind-enderproxy:

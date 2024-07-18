@@ -20,6 +20,46 @@ Benutzern, verschiedene Verbindungsanforderungen über einen einzigen Proxy zu s
 2. **EnderProxy herunterladen**:
    Lade die neuste Version von EnderProxy von der [Releases-Seite](https://github.com/Endkind/EnderProxy/releases) herunter.
 
+## Docker
+
+alle zur Verfügung stehenden Versionen:
+- `latest`
+- `0.3.0`
+
+### Schnellstart
+
+```shell
+docker run -d --network host --name endkind-enderproxy endkind/enderproxy:0.3.0
+```
+
+### Empfohlene Methode
+
+```shell
+docker volume create endkind-enderproxy
+docker run -d --network host --name endkind-enderproxy -v endkind-enderproxy:/enderproxy endkind/enderproxy:0.3.0
+```
+
+### Docker Compose
+
+Erstelle eine docker-compose.yml Datei mit folgendem Inhalt oder verwende die Datei aus dem [Repository](https://github.com/Endkind/EnderProxy/blob/master/docker-compose.yml).
+
+```yaml
+version: "3"
+services:
+  enderproxy:
+    network_mode: host
+    container_name: endkind-enderproxy
+    volumes:
+      - endkind-enderproxy:/enderproxy
+    image: endkind/enderproxy:0.3.0
+volumes:
+  endkind-enderproxy:
+```
+
+```shell
+docker-compose up -d
+```
+
 ## Nutzung
 
 1. **Proxy starten**:
@@ -27,7 +67,7 @@ Benutzern, verschiedene Verbindungsanforderungen über einen einzigen Proxy zu s
    Um EnderProxy zu starten, benutze foldenden Befehl, wobei `{version}` durch die aktuelle Versionsnummer ersetzt
    werden muss:
 
-   ```sh
+   ```shell
    java -jar EnderProxy-{version}-jar-with-dependencies.jar
    ```
 
@@ -67,13 +107,18 @@ version: 2
    - listenPort: 22
      backendHost: '192.168.0.102'
      backendPort: 22
-
 ```
 
 ## Beitrag leisten
 
 Beiträge sind willkommen! Wenn du einen Bug melden oder ein Feature vorschlagen möchtest, öffne bitte ein [Issue](https://github.com/Endkind/EnderProxy/issues).
 Pull-Requests sind ebenfalls willkommen.
+
+## Zusätzliche Information
+
+- [GitHub Repository](https://github.com/Endkind/EnderProxy)
+- [Docker Repository](https://hub.docker.com/r/endkind/enderproxy)
+- Besuche unsere [Website](https://www.endkind.net) für weitere Informationen über unsere Projekte und Dienstleistungen.
 
 ## Lizenz
 
