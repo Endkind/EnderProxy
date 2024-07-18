@@ -29,14 +29,14 @@ alle zur Verfügung stehenden Versionen:
 ### Schnellstart
 
 ```shell
-docker run -d --network host --name endkind-enderproxy endkind/enderproxy:0.3.0
+docker run -d --network host --name endkind-enderproxy endkind/enderproxy:latest
 ```
 
 ### Empfohlene Methode
 
 ```shell
 docker volume create endkind-enderproxy
-docker run -d --network host --name endkind-enderproxy -v endkind-enderproxy:/enderproxy endkind/enderproxy:0.3.0
+docker run -d --network host --name endkind-enderproxy -v endkind-enderproxy:/enderproxy endkind/enderproxy:latest
 ```
 
 ### Docker Compose
@@ -51,7 +51,7 @@ services:
     container_name: endkind-enderproxy
     volumes:
       - endkind-enderproxy:/enderproxy
-    image: endkind/enderproxy:0.3.0
+    image: endkind/enderproxy:latest
 volumes:
   endkind-enderproxy:
 ```
