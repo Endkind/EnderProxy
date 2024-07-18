@@ -30,17 +30,10 @@ public class EnderProxy {
         loadConfig();
 
         startProxy();
-
-        System.out.println(config);
     }
 
     private void loadConfig() {
         File file = new File("EnderProxy/config.yml");
-        File parentDir = file.getParentFile();
-
-        if (!parentDir.exists()) {
-            parentDir.mkdirs();
-        }
 
         if (!file.exists()) {
             ConfigHelper.copyConfigFromResource();

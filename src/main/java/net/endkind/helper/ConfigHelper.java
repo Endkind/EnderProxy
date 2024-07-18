@@ -21,16 +21,28 @@ public class ConfigHelper {
     }
 
     public static void copyConfigFromResource() {
-        try (InputStream inputStream = ConfigHelper.class.getClassLoader().getResourceAsStream("config.yml"); OutputStream outputStream = new FileOutputStream(CONFIG_PATH)) {
+        try {
+            File configFile = new File(CONFIG_PATH);
+            File parentDir = configFile.getParentFile();
+            if (!parentDir.exists()) {
+                parentDir.mkdirs();
+            }
 
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
+            try (InputStream inputStream = ConfigHelper.class.getClassLoader().getResourceAsStream("config.yml");
+                 OutputStream outputStream = new FileOutputStream(configFile)) {
+
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, length);
+                }
+
+            } catch (IOException e) {
+                System.err.println("Error copying config.yml from resources: " + e.getMessage());
             }
 
         } catch (Exception e) {
-            System.err.println("Error copying config.yml from resources: " + e.getMessage());
+            System.err.println("Error creating directories: " + e.getMessage());
         }
     }
 
@@ -80,7 +92,6 @@ public class ConfigHelper {
 
             if (config.containsKey("version")) {
                 int version = (int) config.get("version");
-                System.out.println(version); //DEBUG
 
                 switch (version) {
                     case 1:
