@@ -5,21 +5,23 @@ import net.endkind.model.Config;
 import net.endkind.model.ServerConfig;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 public class ConfigHelper {
-    public static ServerConfig getServerConfig(String domain) {
+    private static final String CONFIG_PATH = "EnderProxy/config.yml";
+
+    public static ServerConfig getServerConfig(String domain, int port) {
         Config config = EnderProxy.getInstance().getConfig();
-        return config.getServerConfig(domain);
+        return config.getServerConfig(domain, port);
     }
 
     public static void copyConfigFromResource() {
-        try (InputStream inputStream = ConfigHelper.class.getClassLoader().getResourceAsStream("config.yml");
-             OutputStream outputStream = new FileOutputStream("EnderProxy/config.yml")) {
+        try (InputStream inputStream = ConfigHelper.class.getClassLoader().getResourceAsStream("config.yml"); OutputStream outputStream = new FileOutputStream(CONFIG_PATH)) {
 
             byte[] buffer = new byte[1024];
             int length;
@@ -35,7 +37,7 @@ public class ConfigHelper {
     public static Config getConfig() {
         Config config = new Config();
 
-        try (InputStream inputStream = new FileInputStream("EnderProxy/config.yml")) {
+        try (InputStream inputStream = new FileInputStream(CONFIG_PATH)) {
             Yaml yaml = new Yaml();
             Map<String, Object> data = yaml.load(inputStream);
 
@@ -46,13 +48,16 @@ public class ConfigHelper {
                     }
 
                     String domain = entry.getKey();
-                    Map<String, Object> serverConfigMap = (Map<String, Object>) entry.getValue();
-                    int listenPort = (int) serverConfigMap.get("listenPort");
-                    String backendHost = (String) serverConfigMap.get("backendHost");
-                    int backendPort = (int) serverConfigMap.get("backendPort");
 
-                    ServerConfig serverConfig = new ServerConfig(domain, listenPort, backendHost, backendPort);
-                    config.addServerConfig(serverConfig);
+                    for (Object obj: (List) entry.getValue()) {
+                        Map<String, Object> serverConfigMap = (Map<String, Object>) obj;
+                        int listenPort = (int) serverConfigMap.get("listenPort");
+                        String backendHost = (String) serverConfigMap.get("backendHost");
+                        int backendPort = (int) serverConfigMap.get("backendPort");
+
+                        ServerConfig serverConfig = new ServerConfig(domain, listenPort, backendHost, backendPort);
+                        config.addServerConfig(serverConfig);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -60,5 +65,64 @@ public class ConfigHelper {
         }
 
         return config;
+    }
+
+    public static void migrateConfig() {
+        try {
+            Path path = Paths.get(CONFIG_PATH);
+
+            if (!Files.exists(path)) {
+                copyConfigFromResource();
+            }
+
+            Yaml yaml = new Yaml();
+            Map<String, Object> config = yaml.load(Files.newInputStream(path));
+
+            if (config.containsKey("version")) {
+                int version = (int) config.get("version");
+                System.out.println(version); //DEBUG
+
+                switch (version) {
+                    case 1:
+                        migrateConfigV1ToV2(config);
+                        config.put("version", 2);
+                        saveConfig(config);
+                        break;
+                    case 2:
+                        break;
+                    default:
+                        System.err.println("Unknown version: " + version);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error migrating config.yml: " + e.getMessage());
+        }
+    }
+
+    private static void migrateConfigV1ToV2(Map<String, Object> config) {
+        for (Map.Entry<String, Object> entry : config.entrySet()) {
+            if (entry.getValue() instanceof Map) {
+                Map<String, Object> domainConfig = (Map<String, Object>) entry.getValue();
+
+                List<Map<String, Object>> newList = List.of(
+                        Map.of(
+                                "listenPort", domainConfig.get("listenPort"),
+                                "backendHost", domainConfig.get("backendHost"),
+                                "backendPort", domainConfig.get("backendPort")
+                        )
+                );
+
+                config.put(entry.getKey(), newList);
+            }
+        }
+    }
+
+    private static void saveConfig(Map<String, Object> config) throws IOException {
+        try {
+            Yaml yaml = new Yaml();
+            yaml.dump(config, new FileWriter(CONFIG_PATH));
+        } catch (IOException e) {
+            System.err.println("Error saving config.yml: " + e.getMessage());
+        }
     }
 }

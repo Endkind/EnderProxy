@@ -25,9 +25,13 @@ public class EnderProxy {
     public EnderProxy() {
         instance = this;
 
+        ConfigHelper.migrateConfig();
+
         loadConfig();
 
         startProxy();
+
+        System.out.println(config);
     }
 
     private void loadConfig() {
@@ -55,15 +59,18 @@ public class EnderProxy {
 
     private void startProxy() {
         for (int port : ConfigHelper.getConfig().getAllListenPorts()) {
-            new Thread(() -> {
-                openPort(port);
-            }).start();
+            try {
+                new Thread(() -> {
+                    openPort(port);
+                }).start();
+            } catch (Exception e) {
+                System.err.println("Failed to start proxy on port " + port + ": " + e.getMessage());
+            }
         }
     }
 
     public void reload() {
         loadConfig();
-
 
         HashSet<Integer> validPorts = ConfigHelper.getConfig().getAllListenPorts();
 
@@ -81,27 +88,27 @@ public class EnderProxy {
     }
 
     private void openPort(int port) {
-        synchronized (openPorts) {
-            try (ServerSocket serverSocket = new ServerSocket(port)) {
-                System.out.println("EnderProxy listening on port: " + port);
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println("EnderProxy listening on port: " + port);
 
+            synchronized (openPorts) {
                 openPorts.add(port);
-
-                while (openPorts.contains(port)) {
-                    Socket clientSocket = serverSocket.accept();
-                    handleClient(clientSocket);
-                }
-            } catch (IOException e) {
-                System.err.println("Error starting EnderProxy on port " + port + ": " + e.getMessage());
-                openPorts.remove(port);
             }
+
+            while (openPorts.contains(port)) {
+                Socket clientSocket = serverSocket.accept();
+                handleClient(clientSocket, port);
+            }
+        } catch (IOException e) {
+            System.err.println("Error starting EnderProxy on port " + port + ": " + e.getMessage());
+            openPorts.remove(port);
         }
     }
 
-    private void handleClient(Socket clientSocket) throws IOException {
+    private void handleClient(Socket clientSocket, int port) throws IOException {
         new Thread(() -> {
             String clientDomain = clientSocket.getInetAddress().getHostAddress();
-            ServerConfig serverConfig = config.getServerConfig(clientDomain);
+            ServerConfig serverConfig = config.getServerConfig(clientDomain, port);
 
             if (serverConfig != null) {
                 try {

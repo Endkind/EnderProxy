@@ -5,13 +5,13 @@ Benutzern, verschiedene Verbindungsanforderungen über einen einzigen Proxy zu s
 
 ## Voraussetzungen
 
-- Mindest-Java-Version: 1.8 oder höher
+- Mindest-Java-Version: 11 oder höher
 
 ## Installation
 
 1. **Java installieren**:
 
-   Stelle sicher, dass Java 1.8 oder höher installiert ist. Du kannst die Java-Version mit folgendem Befehl überprüfen:
+   Stelle sicher, dass Java 11 oder höher installiert ist. Du kannst die Java-Version mit folgendem Befehl überprüfen:
 
    ```sh
    java -version
@@ -42,27 +42,32 @@ Benutzern, verschiedene Verbindungsanforderungen über einen einzigen Proxy zu s
 Hier ist die Standardkonfiguration, wie sie in deiner `config.yml` aussehen könnte:
 
 ```yaml
-version: 1
+version: 2
 
 'survival.endkind.net':
-   listenPort: 25565
-   backendHost: '192.168.0.100'
-   backendPort: 25565
+   - listenPort: 25565
+     backendHost: '192.168.0.100'
+     backendPort: 25565
+   - listenPort: 22
+     backendHost: '192.168.0.100'
+     backendPort: 22
 
 'forge.endkind.net':
-   listenPort: 25565
-   backendHost: '192.168.0.101'
-   backendPort: 25565
-
-'ssh.endkind.net':
-   listenPort: 22
-   backendHost: '192.168.0.102'
-   backendPort: 22
+   - listenPort: 25565
+     backendHost: '192.168.0.101'
+     backendPort: 25565
+   - listenPort: 22
+     backendHost: '192.168.0.101'
+     backendPort: 22
 
 'www.endkind.net':
-   listenPort: 443
-   backendHost: '192.168.0.103'
-   backendPort: 443
+   - listenPort: 443
+     backendHost: '192.168.0.102'
+     backendPort: 443
+   - listenPort: 22
+     backendHost: '192.168.0.102'
+     backendPort: 22
+
 ```
 
 ## Beitrag leisten
